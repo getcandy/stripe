@@ -97,6 +97,14 @@ class StripeManager
      */
     protected function buildIntent($value, $currencyCode, $shipping)
     {
+        /**
+         * Stripe treats a few currencies differently, so we need to account for
+         * those here, not sure if there's a better way?
+         */
+        if (in_array($currencyCode, ['HUF', 'TWD'])) {
+            $value = $value * 100;
+        }
+
         return PaymentIntent::create([
             'amount' => $value,
             'currency' => $currencyCode,
